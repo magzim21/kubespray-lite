@@ -108,6 +108,15 @@ resource "aws_security_group" "kube_spray" {
     cidr_blocks      = ["0.0.0.0/0"]
   }
 
+  ingress {
+    # description      = "22 TLS from VPC"
+    from_port        = 0 
+    to_port          = 0 
+    protocol         = "-1"
+    # cidr_blocks      = ["0.0.0.0/0"]
+    self             = true
+  }
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -135,7 +144,8 @@ resource "aws_instance" "masters" {
     Purpose = "kube-spray"
   }
 
-  vpc_security_group_ids = [aws_security_group.kube_spray.id]
+
+  security_groups = [aws_security_group.kube_spray.name]
 
   root_block_device {
     volume_size = "10"
@@ -158,7 +168,7 @@ resource "aws_instance" "workers" {
     Purpose = "kube-spray"
   }
 
-  # vpc_security_group_ids = ["kube-spray"]
+  security_groups = [aws_security_group.kube_spray.name]
 
   root_block_device {
     volume_size = "10"
