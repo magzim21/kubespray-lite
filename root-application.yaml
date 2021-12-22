@@ -7,10 +7,10 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/magzim21/kubespray-lite'
-    path: gitops
+    path: apps
     targetRevision: HEAD
     directory:
-      recurse: true
+      # recurse: true
       jsonnet: {}
   destination:
     server: 'https://kubernetes.default.svc'
