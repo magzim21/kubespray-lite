@@ -1,0 +1,40 @@
+Device discovery: Rook will watch for new devices to configure if the ROOK_ENABLE_DISCOVERY_DAEMON setting is enabled, commonly used in bare metal clusters. Operator
+
+crash collector?
+
+
+https://rook.io/docs/rook/v1.8/admission-controller-usage.html
+Enabling the Rook admission controller is recommended
+
+```bash
+kubectl create -f deploy/examples/crds.yaml -f deploy/examples/common.yaml
+tests/scripts/deploy_admission_controller.sh
+kubectl create -f deploy/examples/operator.yaml
+```
+
+Full capabilities dashboard
+```bash
+[root@rook-ceph-tools-78cdfd976c-sclh9 /]# ceph mgr module enable rook
+[root@rook-ceph-tools-78cdfd976c-sclh9 /]# ceph orch set backend rook
+[root@rook-ceph-tools-78cdfd976c-sclh9 /]# ceph orch status
+```
+
+
+
+block             -> CephBlockPool
+shared_filesystem -> CephFilesystem
+object            -> CephObjectStore
+
+BLOCK
+The storage class is defined with a pool which defines the level of data redundancy in Ceph:
+
+
+SHARED_FILESYSTEM
+can be exposed to CephNFS
+
+OBJECT
+object-user.yaml: Creates a simple object storage user and generates credentials for the S3 API
+---
+
+
+cluster-external-management.yaml: Connect to an external Ceph cluster with the admin key of the external cluster to enable remote creation of pools and configure services such as an Object Store or a Shared Filesystem.

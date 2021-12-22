@@ -11,8 +11,8 @@
 - name: init cluster
   hosts: masters[0]
   tasks:
-    - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  
-    # - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  --control-plane-endpoint={{ hostvars["kube-master-0"].ansible_host }}
+    # - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  
+    - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  --control-plane-endpoint={{ hostvars["kube-master-0"].ansible_host }}
       # register: join_command
 
     - name: generate join command 
@@ -21,6 +21,12 @@
         mkdir /root/.kube
         cp /etc/kubernetes/admin.conf /root/.kube/config
       register: _join_command
+
+    - name: fetch kube config
+      fetch:
+        flat: true
+        src: /etc/kubernetes/admin.conf
+        dest: ./admin.conf
 
 
 
