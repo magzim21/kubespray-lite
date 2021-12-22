@@ -1,0 +1,115 @@
+---
+# tasks file for calico
+- name: install crd
+  run_once: true
+  shell: |
+    wget https://docs.projectcalico.org/manifests/crds.yaml  
+    kubectl apply -f crds.yaml
+
+- name: install calicoctl, /opt/cni/bin/calico, /opt/cni/bin/calico-ipam
+  shell: |
+    wget https://github.com/projectcalico/calicoctl/releases/download/v3.20.0/calicoctl  
+    chmod +x calicoctl
+    mv calicoctl /usr/local/bin/
+
+    curl -L -o /opt/cni/bin/calico https://github.com/projectcalico/cni-plugin/releases/download/v3.14.0/calico-amd64
+    chmod 755 /opt/cni/bin/calico
+    curl -L -o /opt/cni/bin/calico-ipam https://github.com/projectcalico/cni-plugin/releases/download/v3.14.0/calico-ipam-amd64
+    chmod 755 /opt/cni/bin/calico-ipam
+
+- name: prepare cni.kubeconfig
+  run_once: true
+  shell: |
+    openssl req -newkey rsa:4096 \
+               -keyout cni.key \
+               -nodes \
+               -out cni.csr \
+               -subj "/CN=calico-cni"
+
+    sudo openssl x509 -req -in cni.csr \
+                      -CA /etc/kubernetes/pki/ca.crt \
+                      -CAkey /etc/kubernetes/pki/ca.key \
+                      -CAcreateserial \
+                      -out cni.crt \
+                      -days 365
+    sudo chown $(id -u):$(id -g) cni.crt
+
+
+    APISERVER=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')
+    kubectl config set-cluster kubernetes \
+        --certificate-authority=/etc/kubernetes/pki/ca.crt \
+        --embed-certs=true \
+        --server=$APISERVER \
+        --kubeconfig=/tmp/cni.kubeconfig
+
+    kubectl config set-credentials calico-cni \
+        --client-certificate=cni.crt \
+        --client-key=cni.key \
+        --embed-certs=true \
+        --kubeconfig=/tmp/cni.kubeconfig
+
+    kubectl config set-context default \
+        --cluster=kubernetes \
+        --user=calico-cni \
+        --kubeconfig=/tmp/cni.kubeconfig
+
+    kubectl config use-context default --kubeconfig=/tmp/cni.kubeconfig
+
+    kubectl create clusterrolebinding calico-cni --clusterrole=calico-cni --user=calico-cni || true
+
+
+- name: fetch this cni.kubeconfig file to localhost
+  run_once: true
+  fetch:
+    flat: true
+    src: /tmp/cni.kubeconfig
+    dest: /tmp/cni.kubeconfig
+
+  
+
+
+
+
+
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/cni/net.d/
+    state: directory
+    mode: '0755'
+
+- name: copy cni.kubeconfig from local to all hosts
+  copy:
+    src: /tmp/cni.kubeconfig
+    dest: /etc/cni/net.d/calico-kubeconfig
+    mode: 0600
+
+- name: copy 10-calico.conflist from local to all hosts
+  copy:
+    src: 10-calico.conflist
+    dest: /etc/cni/net.d/10-calico.conflist
+    mode: 0600
+
+
+
+- name: copy yamls to the remote host
+  run_once: true
+  copy:
+    src: clusterRole.yaml
+    dest: /tmp/clusterRole.yaml
+
+- name: apply yamls
+  run_once: true
+  shell: kubectl apply -f /tmp/clusterRole.yaml
+
+# less than 50 nodes
+# https://projectcalico.docs.tigera.io/getting-started/kubernetes/self-managed-onprem/onpremises#install-calico-with-kubernetes-api-datastore-50-nodes-or-less
+- name: install calico itself
+  run_once: true
+  shell: |
+    curl https://docs.projectcalico.org/manifests/calico.yaml -O
+    kubectl apply -f calico.yaml
+
+
+
+
