@@ -3,3 +3,4 @@ terraform.tfstate.backup
 .terraform*
 inventory.y?ml
 admin.conf
+.DS_Store

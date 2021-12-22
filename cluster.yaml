@@ -36,12 +36,28 @@
     - name: Join control plane to k8s cluster with a token
       shell: "{{ hostvars[groups['masters'][0]]._join_command.stdout_lines[0] }}"
 
-
-
-
-
 - name: install calico
   hosts: kube
   tasks:
     - include_role:
         name: cni-calico
+
+
+- name: Isntall k8s cluster applications
+  hosts: masters[0]
+  tasks:
+    - name: copy ArgoCD master yaml, this installs the rest of applications
+      copy:
+        src: argo-cd.yaml
+        dest: /tmp/argo-cd.yaml
+
+    - name: install argo cd 
+      shell: |
+        kubectl create namespace argocd
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        
+        kubectl apply -f /tmp/argo-cd.yaml
+
+
+
+
