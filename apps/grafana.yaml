@@ -9,7 +9,7 @@ spec:
   source:
     chart: grafana
     repoURL: https://charts.bitnami.com/bitnami
-    targetRevision: 6.5.3
+    targetRevision: 7.4.0
     helm:
       releaseName: sealed-secrets
       # parameters:
