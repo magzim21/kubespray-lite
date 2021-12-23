@@ -15,6 +15,3 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus
-  syncOptions:
-    # - ApplyOutOfSyncOnly=true
-    - CreateNamespace=true
