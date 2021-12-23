@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sealed-secrets
+  name: prometheus
   namespace: argocd
 spec:
   project: default
@@ -12,6 +12,20 @@ spec:
     targetRevision: 6.5.3
     helm:
       releaseName: sealed-secrets
+      # parameters:
+      #   - name: ''
+      #     value: ''
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus
+  syncPolicy:
+    automated:
+      # not default. 
+      # prune: false
+      # not default
+      allowEmpty: true
+      # not default. enable automatic sync when the live cluster's state deviates from the state defined in Git. Default interval 5 secs.
+      # selfHeal: true
+    syncOptions:
+      # - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
