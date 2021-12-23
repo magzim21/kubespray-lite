@@ -16,7 +16,12 @@ spec:
     server: 'https://kubernetes.default.svc'
   syncPolicy:
     automated:
-      selfHeal: true
+      # not default. 
+      prune: false
+      # not default
+      allowEmpty: true
+      # not default. enable automatic sync when the live cluster's state deviates from the state defined in Git. Default interval 5 secs.
+      # selfHeal: true
     syncOptions:
       - ApplyOutOfSyncOnly=true
       - CreateNamespace=true
