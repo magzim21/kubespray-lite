@@ -11,9 +11,9 @@ spec:
     repoURL: 'https://github.com/magzim21/kubespray-lite'
     path: apps/rook-ceph
     targetRevision: HEAD
-    directory:
-      recurse: false
-      jsonnet: {}
+    # directory:
+    #   recurse: false
+    #   jsonnet: {}
   destination:
     server: 'https://kubernetes.default.svc'
   syncPolicy:
@@ -25,5 +25,5 @@ spec:
       # not default. enable automatic sync when the live cluster's state deviates from the state defined in Git. Default interval 5 secs.
       # selfHeal: true
     syncOptions:
-      - ApplyOutOfSyncOnly=true
+      # - ApplyOutOfSyncOnly=true
       - CreateNamespace=true
