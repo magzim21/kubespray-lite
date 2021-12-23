@@ -59,6 +59,14 @@
         sleep 10
         kubectl apply -f /tmp/root-application.yaml
 
+    # - name: get argo cd password
+    #   shell: kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+    #   regiser: argo_password
+
+    # - name: show argo cd password
+    #   debug:
+    #     msg: argo cd password {{ argo_password.output }}
+
 
 
 

@@ -1,0 +1,20 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sealed-secrets
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: kube-prometheus
+    repoURL: https://charts.bitnami.com/bitnami
+    targetRevision: 6.5.3
+    helm:
+      releaseName: sealed-secrets
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prometheus
+  syncOptions:
+    # - ApplyOutOfSyncOnly=true
+    - CreateNamespace=true
