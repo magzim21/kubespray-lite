@@ -10,7 +10,7 @@ spec:
     path: apps
     targetRevision: HEAD
     directory:
-      recurse: true
+      recurse: false
       jsonnet: {}
   destination:
     server: 'https://kubernetes.default.svc'
