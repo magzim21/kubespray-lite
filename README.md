@@ -11,3 +11,4 @@ README.MD
 
 ## TODO
 - modify hostnames
+- use aws vpc module

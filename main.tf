@@ -88,7 +88,7 @@ data "aws_ami" "ubuntu" {
 # }
 
 resource "aws_security_group" "kube_spray" {
-  name        = "kube-spray"
+  name        = "kube-spray-${terraform.workspace}"
   description = "Allow 22 and 6443"
   # vpc_id      = aws_vpc.main.id
 
@@ -126,7 +126,7 @@ resource "aws_security_group" "kube_spray" {
   }
 
   tags = {
-    Name = "kube-spray"
+    Name = "kube-spray-${terraform.workspace}"
   }
 }
 
@@ -139,7 +139,7 @@ resource "aws_instance" "masters" {
   
   key_name = "maxim.run v3"
   tags = {
-    Name = "kube-master-${count.index}"
+    Name = "kube-master-${terraform.workspace}-${count.index}"
     Provisioner ="terraform"
     Purpose = "kube-spray"
   }
@@ -149,6 +149,12 @@ resource "aws_instance" "masters" {
 
   root_block_device {
     volume_size = "10"
+    tags = {
+      Name = "root-${terraform.workspace}-${count.index}"
+      Provisioner = "terraform"
+      Project = "rook-ceph"
+      Purpose = "root"
+    }
 
   }
 
@@ -163,7 +169,7 @@ resource "aws_instance" "workers" {
   
   key_name = "maxim.run v3"
   tags = {
-    Name = "kube-worker-${count.index}"
+    Name = "kube-worker-${terraform.workspace}-${count.index}"
     Provisioner ="terraform"
     Purpose = "kube-spray"
   }
@@ -177,9 +183,10 @@ resource "aws_instance" "workers" {
 
   ebs_block_device {
     tags = {
-      Name = "kube-ebs-${count.index}"
+      Name = "rook-ceph-${terraform.workspace}-${count.index}"
       Provisioner ="terraform"
-      Purpose = "kube-spray"
+      Project = "rook-ceph"
+      Purpose = "rook-ceph"
     }
 
     device_name = "/dev/sdb"
@@ -218,7 +225,7 @@ resource "local_file" "inventory" {
 
     
     provisioner "local-exec" {
-      command = "ansible-playbook -i inventory.yaml cluster.yaml"
+      command = "ansible-playbook -i inventory.yaml -e tf-workspace=${terraform.workspace} cluster.yaml"
     }
 }
 
