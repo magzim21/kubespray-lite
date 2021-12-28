@@ -8,3 +8,15 @@ resources:
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/cluster.yaml
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/toolbox.yaml
   - https://raw.githubusercontent.com/rook/rook/master/deploy/examples/csi/rbd/storageclass.yaml
+
+
+
+# patches:
+#   - target:
+#       kind: CephCluster
+#       name: rook-ceph
+#     patch: |-
+#       - op: replace
+#         path: /spec/network/provider
+#         value: host
+#         
