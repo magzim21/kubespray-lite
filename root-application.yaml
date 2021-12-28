@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://github.com/magzim21/kubespray-lite'
     path: apps
-    targetRevision: HEAD
+    targetRevision: rook-external
     # directory:
     #   recurse: false
     #   jsonnet: {}
