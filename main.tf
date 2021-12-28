@@ -225,7 +225,8 @@ resource "local_file" "inventory" {
 
     
     provisioner "local-exec" {
-      command = "ansible-playbook -i inventory.yaml -e tf-workspace=${terraform.workspace} cluster.yaml"
+      command = "ansible-playbook -i inventory.yaml -e tf_workspace=${terraform.workspace} cluster.yaml"
+      # command = format("ansible-playbook -i inventory.yaml -e tf-workspace=%s cluster.yaml", replace(terraform.workspace, "-", "_"))
     }
 }
 
