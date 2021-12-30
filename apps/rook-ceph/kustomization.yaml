@@ -11,12 +11,12 @@ resources:
 
 
 
-# patches:
-#   - target:
-#       kind: CephCluster
-#       name: rook-ceph
-#     patch: |-
-#       - op: replace
-#         path: /spec/network/provider
-#         value: host
-#         
+patches:
+  - target:
+      kind: CephCluster
+      name: rook-ceph
+    patch: |-
+      - op: replace
+        path: /spec/network/provider
+        value: host
+        
