@@ -210,7 +210,7 @@ resource "aws_instance" "workers" {
 resource "time_sleep" "wait_60_seconds" {
   depends_on = [aws_instance.masters, aws_instance.workers]
 
-  create_duration = "60s"
+  create_duration = "80s"
 }
 
 
