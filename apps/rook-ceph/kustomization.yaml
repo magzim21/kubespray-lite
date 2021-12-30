@@ -17,6 +17,7 @@ patches:
       name: rook-ceph
     patch: |-
       - op: add
-        path: /spec/network/provider
-        value: host
+        path: /spec/network
+        value: {provider: host}
+
         
