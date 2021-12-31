@@ -5,17 +5,9 @@ resources:
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/crds.yaml
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/common.yaml
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/operator.yaml
-  # - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/cluster.yaml
-  # - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/toolbox.yaml
-  # - https://raw.githubusercontent.com/rook/rook/master/deploy/examples/csi/rbd/storageclass.yaml
+  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/common-external.yaml
+  - resources/configmap.yaml
+  - resources/secrets.yaml
+  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/cluster-external.yaml
+  - resources/storageclass.yaml
 
-
-
- # run script
-  # kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/common-external.yaml
-
-# edit configmap or `bash deploy/examples/import-external-cluster.sh`
-
- # kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/cluster-external.yaml   
-
- # kubectl get CephCluster --all-namespaces
