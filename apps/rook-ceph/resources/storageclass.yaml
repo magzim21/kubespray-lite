@@ -2,6 +2,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
+  labels:
+    app.kubernetes.io/instance: rook-ceph-external
   name: rook-ceph-block-ext
   # name: rook-ceph-block
   annotations:
