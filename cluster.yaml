@@ -11,9 +11,16 @@
 - name: init cluster
   hosts: masters[0]
   tasks:
-    # - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  
-    - shell: kubeadm init --pod-network-cidr=192.168.0.0/16  --control-plane-endpoint={{ hostvars[groups['masters'][0]].ansible_host }}
-      # register: join_command
+    - name: check if cluster is running
+      shell: kubectl  cluster-info
+      register: kube_status
+      ignore_errors: true
+
+
+    - name: init cluster
+      shell: kubeadm init --pod-network-cidr=192.168.0.0/16  --control-plane-endpoint={{ hostvars[groups['masters'][0]].ansible_host }}
+      when: '"is running" not in kube_status.stdout'
+
 
     - name: generate join command 
       shell: |
@@ -56,7 +63,7 @@
         kubectl create namespace argocd
         kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
         
-        sleep 10
+        sleep 60
         kubectl apply -f /tmp/root-application.yaml
 
     - name: 'get argo cd password'

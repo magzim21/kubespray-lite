@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: grafana
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
@@ -11,10 +13,10 @@ spec:
     repoURL: https://charts.bitnami.com/bitnami
     targetRevision: 7.4.0
     helm:
-      releaseName: sealed-secrets
-      parameters:
-        - name: 'global.storageClass'
-          value: 'rook-ceph-block'
+      releaseName: grafana
+      # parameters:
+      #   - name: 'global.storageClass'
+      #     value: 'rook-ceph-block'
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
