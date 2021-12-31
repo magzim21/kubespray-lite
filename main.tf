@@ -207,10 +207,10 @@ resource "aws_instance" "workers" {
 #   }
 # }
 
-resource "time_sleep" "wait_60_seconds" {
+resource "time_sleep" "wait_100_seconds" {
   depends_on = [aws_instance.masters, aws_instance.workers]
 
-  create_duration = "80s"
+  create_duration = "100s"
 }
 
 
@@ -221,7 +221,7 @@ resource "local_file" "inventory" {
         }
       )
     filename = "inventory.yaml"
-    depends_on = [time_sleep.wait_60_seconds]
+    depends_on = [time_sleep.wait_100_seconds]
 
     
     provisioner "local-exec" {

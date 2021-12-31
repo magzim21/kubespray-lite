@@ -1,7 +1,11 @@
 ---
 # tasks file for prepare-ubuntu
 
+- name: collect facts about system services
+  service_facts:
+
 - name: install docker 
+  when: ansible_facts.services['docker.service'] is not defined
   shell: |
     apt-get install  -y    ca-certificates     curl     gnupg     lsb-release
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -27,8 +31,6 @@
     apt-get update
     apt-get install -y kubelet kubeadm kubectl
     apt-mark hold kubelet kubeadm kubectl
-
-
 
 
 
