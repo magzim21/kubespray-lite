@@ -13,10 +13,10 @@ spec:
     repoURL: https://charts.bitnami.com/bitnami
     targetRevision: 7.4.0
     helm:
-      releaseName: sealed-secrets
-      parameters:
-        - name: 'global.storageClass'
-          value: 'rook-ceph-block'
+      # releaseName: sealed-secrets
+      # parameters:
+      #   - name: 'global.storageClass'
+      #     value: 'rook-ceph-block'
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
