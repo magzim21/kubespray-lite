@@ -21,5 +21,10 @@ patches:
       - op: add
         path: /spec/network
         value: {provider: host}
-
-        
+  - target:
+      kind: StorageClass
+      name: rook-ceph-block
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value: {'storageclass.kubernetes.io/is-default-class': 'true'}
