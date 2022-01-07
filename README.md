@@ -11,4 +11,5 @@ README.MD
 
 ## TODO
 - modify hostnames
+- Lambda timer to autodestroy
 - use aws vpc module

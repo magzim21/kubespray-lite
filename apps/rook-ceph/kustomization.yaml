@@ -9,6 +9,8 @@ resources:
   - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/toolbox.yaml
   - https://raw.githubusercontent.com/rook/rook/master/deploy/examples/csi/rbd/storageclass.yaml
 
+  - https://raw.githubusercontent.com/rook/rook/v1.8.0/deploy/examples/filesystem.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.8.0/deploy/examples/csi/cephfs/storageclass.yaml
 
 
 patches:
