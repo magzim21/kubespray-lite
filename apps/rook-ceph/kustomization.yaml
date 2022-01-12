@@ -1,16 +1,21 @@
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/crds.yaml
-  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/common.yaml
-  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/operator.yaml
-  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/cluster.yaml
-  - https://raw.githubusercontent.com/rook/rook/release-1.8/deploy/examples/toolbox.yaml
-  - https://raw.githubusercontent.com/rook/rook/master/deploy/examples/csi/rbd/storageclass.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/crds.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/common.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/operator.yaml
 
-  - https://raw.githubusercontent.com/rook/rook/v1.8.0/deploy/examples/filesystem.yaml
-  - https://raw.githubusercontent.com/rook/rook/v1.8.0/deploy/examples/csi/cephfs/storageclass.yaml
+
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/cluster.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/toolbox.yaml
+  - https://raw.githubusercontent.com/rook/rook/v1.7.5/cluster/examples/kubernetes/ceph/csi/rbd/storageclass.yaml
+
+  - resources/filesystem-hdd-warehouse.yaml
+  
+  - resources/nfs-blockpool.yaml
+  - resources/ceph-nfs.yaml
 
 
 patches:
@@ -28,3 +33,50 @@ patches:
       - op: add
         path: /metadata/annotations
         value: {'storageclass.kubernetes.io/is-default-class': 'true'}
+
+  # - target:
+  #     kind: CephFilesystem
+  #     name: myfs
+  #   patch: |-
+  #     - op: replace
+  #       path: /metadata/name
+  #       value: hdd-warehouse
+  # - target:
+  #     kind: CephFilesystem
+  #     name: myfs
+  #   patch: |-
+  #     - op: add
+  #       path: /spec/metadataServer/labels
+  #       value: {'app': 'hdd-warehouse-mds'}
+  # - target:
+  #     kind: CephFilesystem
+  #     name: myfs
+  #   patch: |-
+  #     - op: add
+  #       path: /spec/dataPools/0/deviceClass
+  #       value: hdd
+  # - target:
+  #     kind: CephFilesystem
+  #     name: myfs
+  #   patch: |-
+  #     - op: replace
+  #       path: /spec/metadataServer/placement/podAntiAffinity/requiredDuringSchedulingIgnoredDuringExecution/0/labelSelector/matchExpressions/0
+  #       value: {"operator": "In", "key": "app", "values": ["hdd-warehouse-mds"] } 
+
+
+  - target:
+      kind: CephNFS
+      name: my-nfs
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: nfs
+  
+  - target:
+      kind: CephNFS
+      name: my-nfs
+    patch: |-
+      - op: replace
+        path: /spec/rados/pool
+        value: nfs-ganesha
+

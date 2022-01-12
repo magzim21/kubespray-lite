@@ -1,0 +1,40 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: hdd-warehouse
+  namespace: rook-ceph
+spec:
+  dataPools:
+  - failureDomain: host
+    # deviceClass: hdd
+    parameters:
+      compression_mode: none
+    replicated:
+      requireSafeReplicaSize: true
+      size: 3
+  metadataPool:
+    parameters:
+      compression_mode: none
+    replicated:
+      requireSafeReplicaSize: true
+      size: 3
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    annotations: null
+    labels:
+      antiaffinity: hdd-warehouse-mds
+    placement:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: antiaffinity
+                    operator: In
+                    values:
+                      - hdd-warehouse-mds
+              topologyKey: kubernetes.io/hostname
+    resources: null
+  preserveFilesystemOnDelete: true
+

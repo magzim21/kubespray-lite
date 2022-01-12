@@ -1,0 +1,40 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  finalizers:
+    - cephfilesystem.ceph.rook.io
+  name: druidfs
+  namespace: rook-ceph
+spec:
+  dataPools:
+    - failureDomain: host
+      parameters:
+        compression_mode: none
+      replicated:
+        requireSafeReplicaSize: true
+        size: 2
+  metadataPool:
+    compressionMode: none
+    parameters:
+      compression_mode: none
+    replicated:
+      requireSafeReplicaSize: true
+      size: 2
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    labels:
+      antiaffinity: druidfs-mds
+    placement:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: antiaffinity
+                  operator: In
+                  values:
+                    - druidfs-mds
+            topologyKey: kubernetes.io/hostname
+    resources: null
+  preserveFilesystemOnDelete: true

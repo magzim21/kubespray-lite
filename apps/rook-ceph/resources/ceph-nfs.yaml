@@ -1,0 +1,63 @@
+apiVersion: ceph.rook.io/v1
+kind: CephNFS
+metadata:
+  # The name of Ganesha server cluster to create. It will be reflected in
+  # the name(s) of the ganesha server pod(s)
+  name: nfs
+  # The namespace of the Rook cluster where the Ganesha server cluster is
+  # created.
+  namespace: rook-ceph
+spec:
+  # NFS client recovery storage settings
+  rados:
+    # RADOS pool where NFS client recovery data and per-daemon configs are
+    # stored. In this example the data pool for the "myfs" filesystem is used.
+    # If using the object store example, the data pool would be
+    # "my-store.rgw.buckets.data". Note that this has nothing to do with where
+    pool: nfs-ganesha
+    # RADOS namespace where NFS client recovery data and per-daemon configs are
+    # stored.
+    namespace: ganesha-ns
+
+  # Settings for the ganesha server
+  server:
+    # the number of active ganesha servers
+    active: 3
+    # where to run the nfs ganesha server
+    labels:
+      app: rook-ceph-nfs
+    placement:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - rook-ceph-nfs
+            topologyKey: kubernetes.io/hostname
+    #  nodeAffinity:
+    #    requiredDuringSchedulingIgnoredDuringExecution:
+    #      nodeSelectorTerms:
+    #      - matchExpressions:
+    #        - key: role
+    #          operator: In
+    #          values:
+    #          - mds-node
+    #  tolerations:
+    #  - key: mds-node
+    #    operator: Exists
+    #  podAffinity:
+    #  podAntiAffinity:
+    # The requests and limits set here allow the ganesha pod(s) to use half of
+    # one CPU core and 1 gigabyte of memory
+    resources:
+    #  limits:
+    #    cpu: "500m"
+    #    memory: "1024Mi"
+    #  requests:
+    #    cpu: "500m"
+    #    memory: "1024Mi"
+    # the priority class to set to influence the scheduler's pod preemption
+    priorityClassName:
+
