@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+
+
+# patches:
+#   - target:
+#       kind: CephCluster
+#       name: rook-ceph
+#     patch: |-
+#       - op: add
+#         path: /spec/network
+#         value: {provider: host}
+#   - target:
+#       kind: StorageClass
+#       name: rook-ceph-block
+#     patch: |-
+#       - op: add
+#         path: /metadata/annotations
+#         value: {'storageclass.kubernetes.io/is-default-class': 'true'}

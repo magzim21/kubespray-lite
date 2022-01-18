@@ -41,51 +41,6 @@ data "aws_ami" "ubuntu" {
 }
 
 
-# resource "aws_vpc" "main" {
-#   cidr_block = "10.0.0.0/16"
-#   enable_dns_support = true #gives you an internal domain name
-#   enable_dns_hostnames = true #gives you an internal host name
-#   tags = {
-#     Name = "temporary"
-#   }
-# }
-
-# resource "aws_subnet" "k8s-subnet-public-1" {
-#     vpc_id = aws_vpc.main.id
-#     cidr_block = "10.0.0.0/24"
-#     map_public_ip_on_launch = true
-#     availability_zone = "eu-central-1a"
-#     tags = {
-#         Name = "k8s-subnet-public-1"
-#     }
-# }
-
-# resource "aws_internet_gateway" "k8s-igw" {
-#     vpc_id =  aws_vpc.main.id
-#     tags = {
-#         Name = "k8s-igw"
-#     }
-# }
-
-# resource "aws_route_table" "crt-prod-public" {
-#     vpc_id = aws_vpc.main.id
-    
-#     route {
-#         //associated subnet can reach everywhere
-#         cidr_block = "0.0.0.0/0" 
-#         //CRT uses this IGW to reach internet
-#         gateway_id =  aws_internet_gateway.k8s-igw.id
-#     }
-    
-#     tags = {
-#         Name = "prod-public-crt"
-#     }
-# }
-
-# resource "aws_route_table_association" "crta-k8s-subnet-public-1"{
-#     subnet_id = aws_subnet.k8s-subnet-public-1.id
-#     route_table_id = aws_route_table.crt-prod-public.id
-# }
 
 resource "aws_security_group" "kube_spray" {
   name        = "kube-spray-${terraform.workspace}"
@@ -152,7 +107,7 @@ resource "aws_instance" "masters" {
     tags = {
       Name = "root-${terraform.workspace}-${count.index}"
       Provisioner = "terraform"
-      Project = "rook-ceph"
+      Project = "hdfs-ceph"
       Purpose = "root"
     }
 
@@ -183,10 +138,10 @@ resource "aws_instance" "workers" {
 
   ebs_block_device {
     tags = {
-      Name = "rook-ceph-${terraform.workspace}-${count.index}"
+      Name = "hdfs-ceph-${terraform.workspace}-${count.index}"
       Provisioner ="terraform"
-      Project = "rook-ceph"
-      Purpose = "rook-ceph"
+      Project = "hdfs-ceph"
+      Purpose = "hdfs-ceph"
     }
 
     device_name = "/dev/sdb"
@@ -197,15 +152,6 @@ resource "aws_instance" "workers" {
 }
 
 
-
-# data "template_file" "init" {
-#   template = file("${path.module}/inventory.tpl")
-#   rendered =  file("${path.module}/inventory.yaml")
-#   vars = {
-#     masters = [for host in aws_instance.masters: { "name" : host.tags.Name, "ip" : host.public_ip }]
-#     workers = [for host in aws_instance.workers: { "name" : host.tags.Name, "ip" : host.public_ip }]
-#   }
-# }
 
 resource "time_sleep" "wait_100_seconds" {
   depends_on = [aws_instance.masters, aws_instance.workers]
@@ -226,7 +172,6 @@ resource "local_file" "inventory" {
     
     provisioner "local-exec" {
       command = "ansible-playbook -i inventory.yaml -e tf_workspace=${terraform.workspace} cluster.yaml"
-      # command = format("ansible-playbook -i inventory.yaml -e tf-workspace=%s cluster.yaml", replace(terraform.workspace, "-", "_"))
     }
 }
 
