@@ -17,6 +17,8 @@ resources:
   - resources/nfs-blockpool.yaml
   - resources/ceph-nfs.yaml
 
+  - resources/dashboard-nodeport.yaml
+
 
 patches:
   - target:
@@ -26,6 +28,13 @@ patches:
       - op: add
         path: /spec/network
         value: {provider: host}
+  - target:
+      kind: CephCluster
+      name: rook-ceph
+    patch: |-
+      - op: add
+        path: /spec/storage/
+        value: {deviceFilter: nvme1n1}
   - target:
       kind: StorageClass
       name: rook-ceph-block

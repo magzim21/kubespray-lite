@@ -1,7 +1,7 @@
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
-  name: nfs-cephnfs
+  name: nfs-ganesha
   namespace: rook-ceph
 spec:
   failureDomain: host

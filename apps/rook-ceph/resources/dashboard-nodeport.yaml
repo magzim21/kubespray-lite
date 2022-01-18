@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-dashboard
+  namespace: rook-ceph
+spec:
+  ports:
+    - name: https-dashboard
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  selector:
+    app: rook-ceph-mgr
+    ceph_daemon_id: a
+    rook_cluster: rook-ceph
+  type: NodePort
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster
