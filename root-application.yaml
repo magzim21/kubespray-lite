@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://github.com/magzim21/kubespray-lite'
     path: apps
-    targetRevision: HEAD
+    targetRevision: zookeeper
     # directory:
     #   recurse: false
     #   jsonnet: {}

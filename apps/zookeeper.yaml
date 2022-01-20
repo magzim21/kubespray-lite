@@ -1,0 +1,64 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: foodpickup-prod
+resources:
+  - 'https://raw.githubusercontent.com/kubernetes/website/release-1.22/content/en/examples/application/zookeeper/zookeeper.yaml'
+
+
+
+
+patches:
+- target:
+    kind: StatefulSet
+    name: zk
+  patch: |-
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: zk
+    spec:
+      replicas: 1
+      template:
+        spec:
+          containers:
+            - name: kubernetes-zookeeper
+              resources:
+                requests:
+                  cpu: "0.5"
+                  memory: 1Gi
+                limits:
+                  cpu: "0.5"
+                  memory: 1Gi
+              command:
+              - sh
+              - -c
+              - "start-zookeeper \
+                --servers=1 \
+                --data_dir=/var/lib/zookeeper/data \
+                --data_log_dir=/var/lib/zookeeper/data/log \
+                --conf_dir=/opt/zookeeper/conf \
+                --client_port=2181 \
+                --election_port=3888 \
+                --server_port=2888 \
+                --tick_time=2000 \
+                --init_limit=10 \
+                --sync_limit=5 \
+                --heap=512M \
+                --max_client_cnxns=60 \
+                --snap_retain_count=3 \
+                --purge_interval=12 \
+                --max_session_timeout=40000 \
+                --min_session_timeout=4000 \
+                --log_level=INFO"
+      volumeClaimTemplates:
+        - metadata:
+            name: datadir
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Mi
+
+                
