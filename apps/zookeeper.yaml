@@ -4,10 +4,6 @@
 # namespace: foodpickup-prod
 resources:
   - 'https://raw.githubusercontent.com/kubernetes/website/release-1.22/content/en/examples/application/zookeeper/zookeeper.yaml'
-
-
-
-
 patches:
 - target:
     kind: StatefulSet
@@ -61,4 +57,3 @@ patches:
               requests:
                 storage: 50Mi
 
-                
